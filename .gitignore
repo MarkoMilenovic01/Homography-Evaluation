@@ -1,0 +1,48 @@
+# ============================================================
+# Homography Project - .gitignore
+# Keep only: src/, visualizations/, results/, checkpoints/, requirements.txt
+# ============================================================
+
+# --- Ignore everything by default ---
+*
+
+# --- Allow these folders and their contents ---
+!src/
+!src/**
+!visualizations/
+!visualizations/**
+!results/
+!results/**
+!checkpoints/
+!checkpoints/**
+
+# --- Allow essential files ---
+!requirements.txt
+!.gitignore
+
+# --- Ignore junk even inside allowed folders ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.log
+*.tmp
+*.bak
+*.swp
+*.zip
+*.tar.gz
+*.npy
+*.npz
+*.pth
+*.pt
+*.DS_Store
+Thumbs.db
+.vscode/
+.ipynb_checkpoints/
+.env/
+env/
+venv/
+build/
+dist/
+*.egg-info/
