@@ -1,5 +1,10 @@
 # ============================================================
-# compare_methods_fixed.py
+#   Loads RMSE results from different homography estimation
+#   methods (regression, classification, and SIFT) and compares
+#   them quantitatively and visually.
+#
+#   Produces summary statistics (mean ± std) and a boxplot
+#   visualization for inclusion in evaluation reports.
 # ============================================================
 
 import os
@@ -7,23 +12,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------
-# CONFIGURATION
+# Configuration
 # ------------------------------------------------------------
 RESULTS_DIR = r"C:\Users\marko\Desktop\Master\RV\Homography\results"
 FILES = {
     "Regression": "rmse_regression.txt",
     "Classification": "rmse_classification.txt",
-    "SIFT": "rmse_classical_sift.txt"
+    "SIFT": "rmse_classical_sift.txt",
 }
 
 SAVE_BOX = os.path.join(RESULTS_DIR, "compare_boxplot.png")
 SAVE_HIST = os.path.join(RESULTS_DIR, "compare_histogram.png")
 
+
 # ------------------------------------------------------------
-# LOAD RMSE FILES
+# Helper function
 # ------------------------------------------------------------
 def load_rmse(path):
-    """Load numeric values from file, ignoring text."""
+    """
+    Load numeric RMSE values from a file, ignoring any text or symbols.
+    Returns a NumPy array of floats.
+    """
     values = []
     with open(path, "r") as f:
         for line in f:
@@ -31,9 +40,13 @@ def load_rmse(path):
                 try:
                     values.append(float(token))
                 except ValueError:
-                    pass
+                    continue
     return np.array(values, dtype=float)
 
+
+# ------------------------------------------------------------
+# Load RMSE data
+# ------------------------------------------------------------
 rmse_data, rmse_means, rmse_stds = {}, {}, {}
 
 for name, file in FILES.items():
@@ -41,7 +54,7 @@ for name, file in FILES.items():
     vals = load_rmse(path)
     rmse_data[name] = vals
 
-    # 🧠 New logic:
+    # If only two values are stored, interpret them as mean and std
     if len(vals) == 2:
         rmse_means[name], rmse_stds[name] = vals[0], vals[1]
     else:
@@ -49,16 +62,18 @@ for name, file in FILES.items():
 
     print(f"{name:<15} mean = {rmse_means[name]:.4f}, std = {rmse_stds[name]:.4f}")
 
+
 # ------------------------------------------------------------
-# PRINT SUMMARY
+# Print RMSE summary
 # ------------------------------------------------------------
-print("\n📊 RMSE SUMMARY")
+print("\nRMSE SUMMARY")
 print("────────────────────────────")
 for n in FILES.keys():
     print(f"{n:<15} mean = {rmse_means[n]:7.4f}, std = {rmse_stds[n]:7.4f}")
 
+
 # ------------------------------------------------------------
-# PLOTS
+# Visualization
 # ------------------------------------------------------------
 plt.figure(figsize=(8, 5))
 plt.title("RMSE Boxplot Comparison", fontsize=13)
@@ -74,15 +89,15 @@ plt.grid(alpha=0.3, linestyle="--")
 plt.tight_layout()
 plt.savefig(SAVE_BOX, dpi=150)
 plt.close()
-print(f"✅ Saved boxplot → {SAVE_BOX}")
+print(f"Saved boxplot → {SAVE_BOX}")
 
 
 # ------------------------------------------------------------
-# FINAL TABLE
+# Final comparison table
 # ------------------------------------------------------------
-print("\n📈 FINAL COMPARISON TABLE")
+print("\nFINAL COMPARISON TABLE")
 print("────────────────────────────")
 for n in FILES.keys():
     print(f"{n:<15} {rmse_means[n]:7.4f} ± {rmse_stds[n]:.4f}")
 
-print("\n🎯 Comparison complete! Results saved in 'results/' folder.\n")
+print("\nComparison complete. Results saved in 'results/' folder.\n")
